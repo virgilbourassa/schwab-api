@@ -709,12 +709,12 @@ class Schwab(SessionManager):
         response = json.loads(r.text)
         return response["Orders"]
 
-    def get_account_info_v2(self):
+    def get_account_info_v2_broken(self):
         account_info = dict()
         self.update_token(token_type='api')
         r = requests.get(urls.positions_v2(), headers=self.headers)
         if r.status_code >= 400:
-            raise urllib.error.HTTPError(r.url, r.status_code, r.reason, r.request.headers, None)
+            raise urllib.error.HTTPError(r.url, r.status_code, f"{r.reason}: {r.text}", r.request.headers, None)
         response = json.loads(r.text)
         for account in response['accounts']:
             positions = list()
