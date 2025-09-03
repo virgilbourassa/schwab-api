@@ -709,6 +709,7 @@ class Schwab(SessionManager):
         response = json.loads(r.text)
         return response["Orders"]
 
+    # Now raises urllib.error.HTTPError: HTTP Error 400: Bad Request: "Account number is required."
     def get_account_info_v2_broken(self):
         account_info = dict()
         self.update_token(token_type='api')
