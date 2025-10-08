@@ -119,9 +119,10 @@ class Schwab(SessionManager):
         }
         r = requests.post(urls.transaction_history_v2(), json=data, headers=self.headers)
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
         return json.loads(r.text)
 
+    # Defunct - returns 404 status. Use trade_v2 instead.
     def trade(self, ticker, side, qty, account_id, dry_run=True, reinvest=True, tax_optimized_cost_basis=True):
         """
             ticker (str) - The ticker symbol to trade,
@@ -163,7 +164,7 @@ class Schwab(SessionManager):
         r = self.session.post(urls.order_verification(), data)
 
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
 
         response = json.loads(r.text)
 
@@ -198,7 +199,7 @@ class Schwab(SessionManager):
         r = self.session.post(urls.order_confirmation(), data)
 
         if r.status_code != 200:
-            messages.append(r.text)
+            messages.append(f"Status {r.status_code} {r.text}")
             return messages, False
 
         response = json.loads(r.text)
@@ -364,7 +365,7 @@ class Schwab(SessionManager):
 
         r = requests.post(urls.order_verification_v2(), json=data, headers=self.headers)
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
 
         response = json.loads(r.text)
 
@@ -396,7 +397,7 @@ class Schwab(SessionManager):
         r = requests.post(urls.order_verification_v2(), json=data, headers=self.headers)
 
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
 
         response = json.loads(r.text)
 
@@ -558,7 +559,7 @@ class Schwab(SessionManager):
 
         r = requests.post(urls.order_verification_v2(), json=data, headers=self.headers)
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
 
         response = json.loads(r.text)
 
@@ -589,7 +590,7 @@ class Schwab(SessionManager):
         r = requests.post(urls.order_verification_v2(), json=data, headers=self.headers)
 
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
 
         response = json.loads(r.text)
 
@@ -686,7 +687,7 @@ class Schwab(SessionManager):
         self.update_token(token_type='update')
         r = requests.post(urls.ticker_quotes_v2(), json=data, headers=self.headers)
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
 
         response = json.loads(r.text)
         return response["quotes"], True
@@ -704,7 +705,7 @@ class Schwab(SessionManager):
             self.headers["schwab-client-account"] = str(account_id)
         r = requests.get(urls.orders_v2(), headers=self.headers)
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
 
         response = json.loads(r.text)
         return response["Orders"]
@@ -820,7 +821,7 @@ class Schwab(SessionManager):
         self.update_token(token_type='update')
         r = requests.get(full_url, headers=self.headers)
         if r.status_code != 200:
-            return [r.text], False
+            return [f"Status {r.status_code}: {r.text}"], False
 
         response = json.loads(r.text)
         return response
