@@ -705,15 +705,18 @@ class Schwab(SessionManager):
             self.headers["schwab-client-account"] = str(account_id)
         r = requests.get(urls.orders_v2(), headers=self.headers)
         if r.status_code != 200:
-            return [f"Status {r.status_code}: {r.text}"], False
+            return [f"Status {r.status_code}: {r.text}"]
 
         response = json.loads(r.text)
         return response["Orders"]
 
     # Now raises urllib.error.HTTPError: HTTP Error 400: Bad Request: "Account number is required."
-    def get_account_info_v2_broken(self):
+    def get_account_info_v2(self):
         account_info = dict()
         self.update_token(token_type='api')
+        # somewhere around 2025-08-25, this change became necessary
+        if 'schwab-client-account' in self.headers:
+            self.headers['Schwab-Client-Ids'] = self.headers['schwab-client-account']
         r = requests.get(urls.positions_v2(), headers=self.headers)
         if r.status_code >= 400:
             raise urllib.error.HTTPError(r.url, r.status_code, f"{r.reason}: {r.text}", r.request.headers, None)
