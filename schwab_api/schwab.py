@@ -248,7 +248,7 @@ class Schwab(SessionManager):
                         tested is value 48 mapping to Day-only orders.
                         48 - Day
                         49 - GTC Good till canceled
-                        51 - Immediate-or-cancel
+                        51 - Immediate-or-cancel (round lots of hundreds of shares)
                         52 - Fill-or-kill
                         201 - Day + extended hours
             limit_price (number) - The limit price to set with the order, if necessary.
