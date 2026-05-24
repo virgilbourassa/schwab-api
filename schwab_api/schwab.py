@@ -249,7 +249,7 @@ class Schwab(SessionManager):
                         48 - Day
                         49 - GTC Good till canceled
                         51 - Immediate-or-cancel (round lots of hundreds of shares)
-                        52 - Fill-or-kill
+                        52 - Fill-or-kill (round lots of hundreds of shares within security's quoted spread)
                         201 - Day + extended hours
             limit_price (number) - The limit price to set with the order, if necessary.
             stop_price (number) -  The stop price to set with the order, if necessary.
