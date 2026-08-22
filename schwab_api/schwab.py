@@ -721,7 +721,8 @@ class Schwab(SessionManager):
             self.headers['Schwab-Client-Ids'] = self.headers['schwab-client-account']
         r = requests.get(urls.positions_v2(), headers=self.headers)
         if r.status_code >= 400:
-            raise urllib.error.HTTPError(r.url, r.status_code, f"{r.reason}: {r.text}", r.request.headers, None)
+            raise urllib.error.HTTPError(r.url, r.status_code, f"{r.reason}: {r.text=}, {r.request.headers=}",
+                                         r.request.headers, None)
         response = json.loads(r.text)
         for account in response['accounts']:
             positions = list()
@@ -828,5 +829,66 @@ class Schwab(SessionManager):
         if r.status_code != 200:
             return [f"Status {r.status_code}: {r.text}"], False
 
+        response = json.loads(r.text)
+        return response
+
+    def get_balances_and_positions(self, account_id):
+        """
+        Returns a dict with the following structure:
+        {
+            "brokerageAccountId": 12345678,
+            "accountType": 1,
+            "dayTradeCount": 0,
+            "isPatternDayTrader": false,
+            "pendingPurchasesEnabled": true,
+            "showPendingPurchasesBanner": false,
+            "openOrdersIncluded": true,
+            "balanceDetails": {
+                "availableToTradeBalances": {
+                    "cash": 99.99,
+                    "settledFunds": 99.99,
+                    "mutualFunds": 99.99,
+                    "netWorth": 9999.99
+                }
+            },
+            "positionDetails": {
+                "positions": [
+                    {
+                        "symbol": "FIX",
+                        "displaySymbol": null,
+                        "symbolDescription": "COMFORT SYS USA INC",
+                        "securityType": "Stock/ETF",
+                        "itemIssueId": 123456789,
+                        "shares": 9.999,
+                        "shortShares": 0.0,
+                        "totalShares": 9.999,
+                        "totalOptions": 0.0,
+                        "reinvestDividend": true,
+                        "reinvestCapitalGains": false
+                    },
+                    {
+                        "symbol": "MU",
+                        "displaySymbol": null,
+                        "symbolDescription": "MICRON TECHNOLOGY INC",
+                        "securityType": "Stock/ETF",
+                        "itemIssueId": 987654321,
+                        "shares": 99.0,
+                        "shortShares": 0.0,
+                        "totalShares": 99.0,
+                        "totalOptions": 0.0,
+                        "reinvestDividend": false,
+                        "reinvestCapitalGains": false
+                    }
+                ]
+            }
+        }
+        """
+        self.headers['schwab-resource-version'] = '1.0'
+        self.update_token("api")
+        self.headers["schwab-client-account"] = str(account_id)
+        r = requests.get(urls.balances_positions_v2(), params={'account': 'BROKERAGE'}, headers=self.headers)
+        if r.status_code >= 400:
+            raise urllib.error.HTTPError(r.url, r.status_code, f"{r.reason}: {r.text=}, {r.request.headers=}",
+                                         r.request.headers, None)
         response = json.loads(r.text)
         return response

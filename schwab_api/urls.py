@@ -36,6 +36,9 @@ def lot_details_v2():
 def option_chains_v2():
     return "https://ausgateway.schwab.com/api/is.CSOptionChainsWeb/v1/OptionChainsPort/OptionChains/chains"
 
+def balances_positions_v2():
+    return "https://ausgateway.schwab.com/api/is.TradeOrderManagementWeb/v1/TradeOrderManagementWebPort/account/balancespositions"   # ?account=BROKERAGE
+
 # Old API
 # Now only returns a single account
 def positions_data():
