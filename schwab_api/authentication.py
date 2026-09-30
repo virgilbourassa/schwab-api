@@ -170,7 +170,8 @@ class SessionManager:
         except TimeoutError:
             raise Exception("Login was not successful; please check username and password")
 
-        await self.page.wait_for_selector("#_txtSymbol")
+        # The following wait times out now - losing it.
+        # await self.page.wait_for_selector("#_txtSymbol")
 
         await self._async_save_and_close_session()
         return True
